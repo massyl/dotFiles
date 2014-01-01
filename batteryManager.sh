@@ -5,9 +5,5 @@ battery_level=`acpi -b | grep -P -o '[0-9]+(?=%)'`
 
 export DISPLAY=:0
 
-if [ $battery_level -le 20 ] && [ $battery_charging = "Discharging" ]
-then
+[ $battery_level -le 20 ] && [ $battery_charging = "Discharging" ] && notify-send "Battery low : ${battery_level}%!"
 
-    notify-send "Battery low : ${battery_level}%!"
-
-fi
