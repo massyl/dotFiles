@@ -1,1 +1,1 @@
-* * * * * /home/massyl/bin/batteryManager.sh
+* * * * * $HOME/bin/batteryManager.sh
