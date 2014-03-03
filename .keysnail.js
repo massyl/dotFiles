@@ -405,11 +405,13 @@ key.setEditKey('C-M-p', function (ev) {
 }, 'Focus to the previous text area');
 
 key.setCaretKey([['C-a'], ['^']], function (ev) {
-    ev.target.ksMarked ? goDoCommand("cmd_selectBeginLine") : goDoCommand("cmd_beginLine");
+    // ev.target.ksMarked ? goDoCommand("cmd_selectBeginLine") : goDoCommand("cmd_beginLine");
+    goDoCommand("cmd_selectBeginLine");
 }, 'Move caret to the beginning of the line');
 
 key.setCaretKey([['C-e'], ['$'], ['M->'], ['G']], function (ev) {
-    ev.target.ksMarked ? goDoCommand("cmd_selectEndLine") : goDoCommand("cmd_endLine");
+    // ev.target.ksMarked ? goDoCommand("cmd_selectEndLine") : goDoCommand("cmd_endLine");
+    goDoCommand("cmd_selectEndLine");
 }, 'Move caret to the end of the line');
 
 key.setCaretKey([['C-n'], ['j']], function (ev) {
