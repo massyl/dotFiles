@@ -1,4 +1,4 @@
-// YOU CAN PRESERVE YOUR CODE IN THIS AREA WHEN GENERATING THE INIT FILE USING GUI.
+// YOU CA PRESERVE YOUR CODE IN THIS AREA WHEN GENERATING THE INIT FILE USING GUI.
 // Put all your code except special key, set*key, hook, blacklist.
 // ========================================================================= //
 //{{%PRESERVE%
@@ -8,7 +8,7 @@
 
 // ========================= Special key settings ========================== //
 
-key.quitKey              = "C-g";
+//key.quitKey              = "C-g";
 key.helpKey              = "<f1>";
 key.escapeKey            = "C-q";
 key.macroStartKey        = "<f3>";
@@ -19,9 +19,35 @@ key.negativeArgument2Key = "C-M--";
 key.negativeArgument3Key = "M--";
 key.suspendKey           = "<f2>";
 
+
+ext.add("activate-caret-mode",
+        function (ev, arg) {
+            setCaretMode(true);
+        }, M({ja: "activate-caret-mode", en: "activate-caret-mode"}));
+
+ext.add("deactivate-caret-mode",
+        function (ev, arg) {
+            setCaretMode(false);
+        }, M({ja: "deactivate-caret-mode", en: "deactivate-caret-mode"}));
+
+ext.add("status-caret-mode",
+        function (ev, arg) {
+            display.echoStatusBar("Caret mode " + (isCaretMode() ? "a" : "dea") + "ctivated!", 2000);
+        }, M({ja: "status-caret-mode", en: "status-caret-mode"}));
+
+function isCaretMode() {
+    return util.getBoolPref("accessibility.browsewithcaret");
+}
+
+function setCaretMode(b) {
+    util.setBoolPref("accessibility.browsewithcaret", b);
+    display.echoStatusBar("Caret mode " + (isCaretMode() ? "a" : "dea") + "ctivated!", 2000);
+};
+
 // ================================= Hooks ================================= //
 
 hook.setHook('KeyBoardQuit', function (aEvent) {
+    setCaretMode(false);
     if (key.currentKeySequence.length) {
         return;
     }
@@ -64,7 +90,6 @@ key.setViewKey(';', function (aEvent, aArg) {
 key.setViewKey(['C-c', 'C-e'], function (aEvent, aArg) {
         ext.exec("hok-start-continuous-mode", aArg);
     }, 'Start continuous HaH', true);
-
 
 key.setGlobalKey('C-M-r', function (ev) {
     userscript.reload();
@@ -138,18 +163,6 @@ key.setGlobalKey(['C-x', 'C-s'], function (ev) {
     saveDocument(window.content.document);
 }, 'Save current page to the file', true);
 
-key.setGlobalKey('M-w', function (ev) {
-    command.copyRegion(ev);
-}, 'Copy selected text', true);
-
-key.setGlobalKey('C-s', function (ev) {
-    command.iSearchForwardKs(ev);
-}, 'Emacs like incremental search forward', true);
-
-key.setGlobalKey('C-r', function (ev) {
-    command.iSearchBackwardKs(ev);
-}, 'Emacs like incremental search backward', true);
-
 key.setGlobalKey(['C-c', 'u'], function (ev) {
     undoCloseTab();
 }, 'Undo closed tab');
@@ -178,17 +191,21 @@ key.setViewKey([['C-p'], ['k']], function (ev) {
     key.generateKey(ev.originalTarget, KeyEvent.DOM_VK_UP, true);
 }, 'Scroll line up');
 
-key.setViewKey([['C-f'], ['.']], function (ev) {
-    key.generateKey(ev.originalTarget, KeyEvent.DOM_VK_RIGHT, true);
-}, 'Scroll right');
+// key.setViewKey([['C-f'], ['.']], function (ev) {
+//     key.generateKey(ev.originalTarget, KeyEvent.DOM_VK_RIGHT, true);
+// }, 'Scroll right');
 
-key.setViewKey([['C-b'], [',']], function (ev) {
-    key.generateKey(ev.originalTarget, KeyEvent.DOM_VK_LEFT, true);
-}, 'Scroll left');
+// key.setViewKey([['C-b'], [',']], function (ev) {
+//     key.generateKey(ev.originalTarget, KeyEvent.DOM_VK_LEFT, true);
+// }, 'Scroll left');
 
-key.setViewKey([['C-i'], ['i']], function (ev) {
-    key.generateKey(ev.originalTarget, KeyEvent.DOM_VK_TAB, true);
-}, 'Tabulate');
+key.setGlobalKey(['C-i'], function (ev) {
+    document.commandDispatcher.advanceFocus();
+}, 'Tabulation', true);
+
+key.setGlobalKey(['C-M-i'], function (ev) {
+    document.commandDispatcher.rewindFocus();
+}, 'Shift-tabulation', true);
 
 key.setViewKey([['M-v'], ['b']], function (ev) {
     goDoCommand("cmd_scrollPageUp");
@@ -234,10 +251,6 @@ key.setViewKey(['C-x', 'h'], function (ev) {
     goDoCommand("cmd_selectAll");
 }, 'Select all', true);
 
-// key.setViewKey('f', function (ev) {
-//     command.focusElement(command.elementsRetrieverTextarea, 0);
-// }, 'Focus to the first textarea', true);
-
 key.setViewKey('M-n', function (ev) {
     command.walkInputElement(command.elementsRetrieverButton, true, true);
 }, 'Focus to the next button');
@@ -274,10 +287,6 @@ key.setEditKey(['C-x', 'r', 'k'], function (ev, arg) {
 key.setEditKey(['C-x', 'r', 'y'], function (ev) {
     command.yankRectangle(ev.originalTarget, command.kill.buffer);
 }, 'Yank the last killed rectangle with upper left corner at point', true);
-
-key.setEditKey([['C-SPC'], ['C-@']], function (ev) {
-    command.setMark(ev);
-}, 'Set the mark', true);
 
 key.setEditKey('C-o', function (ev) {
     command.openLine(ev);
@@ -412,11 +421,13 @@ key.setCaretKey([['C-p'], ['k']], function (ev) {
 }, 'Move caret to the previous line');
 
 key.setCaretKey([['C-f'], ['l']], function (ev) {
-    ev.target.ksMarked ? goDoCommand("cmd_selectCharNext") : goDoCommand("cmd_scrollRight");
+    // ev.target.ksMarked ? goDoCommand("cmd_selectCharNext") : goDoCommand("cmd_scrollRight");
+    goDoCommand("cmd_selectCharNext");
 }, 'Move caret to the right');
 
 key.setCaretKey([['C-b'], ['h'], ['C-h']], function (ev) {
-    ev.target.ksMarked ? goDoCommand("cmd_selectCharPrevious") : goDoCommand("cmd_scrollLeft");
+    // ev.target.ksMarked ? goDoCommand("cmd_selectCharPrevious") : goDoCommand("cmd_scrollLeft");
+    goDoCommand("cmd_selectCharPrevious");
 }, 'Move caret to the left');
 
 key.setCaretKey([['M-f'], ['w']], function (ev) {
@@ -461,7 +472,12 @@ key.setCaretKey('z', function (ev) {
     command.recenter(ev);
 }, 'Scroll to the cursor position');
 
-key.setCaretKey([['C-SPC'], ['C-@']], function (ev) {
+key.setEditKey([['C-SPC'], ['C-@']], function (ev) {
+    // closing the find bar
+    command.closeFindBar();
+    // activate the caret mode if not already enabled
+    if(!isCaretMode())setCaretMode(true);
+    // at last activate the mark
     command.setMark(ev);
 }, 'Set the mark', true);
 
@@ -484,10 +500,6 @@ key.setCaretKey('F', function (ev) {
 key.setCaretKey(['C-x', 'h'], function (ev) {
     goDoCommand("cmd_selectAll");
 }, 'Select all', true);
-
-// key.setCaretKey('f', function (ev) {
-//     command.focusElement(command.elementsRetrieverTextarea, 0);
-// }, 'Focus to the first textarea', true);
 
 key.setCaretKey('M-p', function (ev) {
     command.walkInputElement(command.elementsRetrieverButton, true, true);
@@ -516,4 +528,25 @@ key.setEditKey(["C-x", "r", "k"],function (aEvent, aArg) {
 
 key.setEditKey(["C-x", "r", "y"], function (aEvent) {
     command.yankRectangle(aEvent.originalTarget, command.killBuffer);
-}, "Yank the last killed rectangle with upper left corner at point", true);
+}, "Yank the last killed rectangle with upper leftcorner at point", true);
+
+//setup to allow  C-n, C-f ... for text selection during copy/yank
+key.setGlobalKey('M-w', function (ev) {
+    command.copyRegion(ev);
+    setCaretMode(false);
+}, 'Copy selected text', true);
+
+key.setGlobalKey('C-s', function (ev) {
+    if(!isCaretMode())setCaretMode(true);
+    command.iSearchForwardKs(ev);
+}, 'Emacs like incremental search forward', true);
+
+key.setGlobalKey('C-r', function (ev) {
+    if(!isCaretMode())setCaretMode(true);
+    command.iSearchBackwardKs(ev);
+}, 'Emacs like incremental search backward', true);
+
+key.setGlobalKey("C-g", function (ev) {
+    tmpTarget=ev.target || ev.originalTarget;
+    tmpTarget.dispatchEvent(key.stringToKeyEvent(key.quitKey));
+}, "Quit");
