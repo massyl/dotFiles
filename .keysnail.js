@@ -552,3 +552,7 @@ key.setGlobalKey("C-g", function (ev) {
     tmpTarget=ev.target || ev.originalTarget;
     tmpTarget.dispatchEvent(key.stringToKeyEvent(key.quitKey));
 }, "Quit");
+
+key.setViewKey(['C-x', 'b'], function (ev, arg) {
+    ext.exec("tanything", arg);
+}, "view all tabs", true);
