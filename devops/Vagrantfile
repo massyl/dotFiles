@@ -1,0 +1,35 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+VAGRANTFILE_API_VERSION="2"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "hashicorp/precise64"
+  config.vm.provision "bootstrap", type: "shell", :path => "./scripts/01-common-setup.sh"
+  #config.vm.network "private_network", type: "dhcp"
+
+  # number_of_instances = 3
+  # (1..number_of_instances).each do |instance_number|
+  #   config.vm.define "vm-#{instance_number}" do |host|
+  #     host.vm.hostname = "vm-#{instance_number}"
+  #     config.vm.synced_folder "./scripts", "/home/vagrant/bin"
+  #     config.vm.provision :shell, :path => "./scripts/vm-#{instance_number}-setup.sh"
+  #   end
+  # end
+  config.vm.define "vm-1" do |host|
+    host.vm.hostname = "vm-1"
+    config.vm.network "private_network", ip: "172.28.128.3"
+    config.vm.synced_folder "./scripts", "/home/vagrant/bin"
+    config.vm.provision "bootstrap", type:"shell", :path => "./scripts/vm-1-setup.sh"
+  end
+  config.vm.define "vm-2" do |host|
+    host.vm.hostname = "vm-2"
+    config.vm.network "private_network", ip: "172.28.128.4"
+    config.vm.synced_folder "./scripts", "/home/vagrant/bin"
+    config.vm.provision "bootstrap", type:"shell", :path => "./scripts/vm-2-setup.sh"
+  end
+  config.vm.define "vm-3" do |host|
+    config.vm.network "private_network", ip: "172.28.128.5"
+    host.vm.hostname = "vm-3"
+    config.vm.synced_folder "./scripts", "/home/vagrant/bin"
+    config.vm.provision "bootstrap", type:"shell", :path => "./scripts/vm-3-setup.sh"
+  end
+end
