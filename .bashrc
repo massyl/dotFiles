@@ -98,9 +98,11 @@ prompt_command () {
 
 unset color_prompt force_color_prompt
 
+# If tmux
+
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm*|rxvt*)
+xterm*|rxvt*|screen*)
    # PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
    prompt_command
     ;;
@@ -131,6 +133,12 @@ alias gpr='git pull --recruse-submodules'
 alias gcr='git clone --recursive'
 alias gfa='git fetch --all'
 alias gco='git commit -m'
+alias gst='git status'
+alias gcn='git checkout -b '
+alias gcb='git checkout '
+alias glb='git branch '
+alias wchd='watch -d ls -l'
+
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -182,21 +190,27 @@ ssh-add ~/.ssh/id_rsa
 
 export RUBYLIB=.:$RUBYLIB
 
-alias vm1="vagrant ssh vm1"
-alias vm2="vagrant ssh vm2"
-alias vm3="vagrant ssh vm3"
-alias vm4="vagrant ssh vm4"
+alias vup="vagrant up"
+alias vm1="vagrant ssh vm-1"
+alias vm2="vagrant ssh vm-2"
+alias vm3="vagrant ssh vm-3"
+alias vm4="vagrant ssh vm-4"
 alias emc='emacsclient'
 alias emx='emacs -nw'
 alias gfs='git flow feature start'
 alias gff='git flow feature finish'
 
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+#PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 export _JAVA_AWT_WM_NONREPARENTING=1
-export SCALA_HOME=/home/massyl/softs/scala/scala
-PATH=$SCALA_HOME/bin:"/home/massyl/softs/scala/sbt/bin":$HOME/bin:$PATH
-PATH=$PATH:"/home/massyl/softs/playframework/play2"
-nitrogen --restore
+export JAVA_HOME=/opt/java/jdk1.7.0_79
+PATH=$JAVA_HOME/bin:$HOME/bin:$PATH
+# export GRADLE_HOME=$HOME/softs/kyriba/gradle-1.11
+export GRADLE_HOME=$HOME/softs/kyriba/gradle-2.2.1
+PATH=$PATH:$GRADLE_HOME/bin
+export ANT_HOME=$HOME/softs/kyriba/ant/apache-ant-1.8.4
+PATH=$PATH:$ANT_HOME/bin
+export $PATH
+# nitrogen --restore
 #emacs --daemon
 
 #maps Menu key same as windows key (serves as meta-key for xmonad, in order to have symetry with windows key)
@@ -211,3 +225,30 @@ xmodmap -e "keycode 66 = 0xff0d"
 #xmodmap -e 'pointer = 1 2 0 4 5 6 7 8 9'
 #restaure the default mouse confirguration
 #xmodmap -e 'pointer = default'
+
+PATH=$PATH:$HOME/softs/scala/scala-2.11.4/bin:$HOME/softs/scala/sbt/bin
+export $PATH
+
+# Test 2b machine of Kinvo
+alias test_2b="ssh -i .ssh/id_rsa admin@10.42.214.20"
+alias ha_mat="ssh -i .ssh/id_rsa admin@10.42.221.20"
+alias ha_test="ssh -i .ssh/id_rsa admin@10.42.242.20"
+# Hack to fix xmonad crash when trying to share screen from hangout
+xprop -root -f _NET_CLIENT_LIST_STACKING 32x -set _NET_CLIENT_LIST_STACKING 0
+
+export GHC_HOME=$HOME/softs/haskell/ghc-7.10.1
+export PATH=$GHC_HOME/bin:$PATH
+export CABAL_HOME=$HOME/.local
+export PATH=$CABAL_HOME/bin:$PATH
+
+eval "$(stack --bash-completion-script stack)"
+
+# Configure copy/yank as in emacs, to be used in terminal
+copy_line_from_x_clipboard() {
+    local n=$READLINE_POINT
+    local l=$READLINE_LINE
+    local s=$(xsel -o)
+    READLINE_LINE=${l:0:$n}$s${l:$n:$((${#l}-n))}
+    READLINE_POINT=$((n+${#s}))
+}
+bind -x '"\C-y": copy_line_from_x_clipboard'
