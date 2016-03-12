@@ -11,6 +11,7 @@ values."
    ;; `+distribution'. For now available distributions are `spacemacs-base'
    ;; or `spacemacs'. (default 'spacemacs)
    dotspacemacs-distribution 'spacemacs
+
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
@@ -32,15 +33,9 @@ values."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
-     (javascript :variables
-                 js2-basic-offset 2
-                 js-indent-level 2)
-     ;; (scala :variables
-     ;;        scala-enable-eldoc-mode t
-     ;;        scala-auto-insert-asterisk-in-comments t)
      spell-checking
      haskell
-     sml
+     javascript
      ;; syntax-checking
      ;; version-control
      )
@@ -76,6 +71,7 @@ values."
    dotspacemacs-elpa-timeout 5
    ;; If non nil then spacemacs will check for updates at startup
    ;; when the current branch is not `develop'. (default t)
+   ;; dotspacemacs-check-for-update t
    dotspacemacs-check-for-update t
    ;; One of `vim', `emacs' or `hybrid'. Evil is always enabled but if the
    ;; variable is `emacs' then the `holy-mode' is enabled at startup. `hybrid'
@@ -115,7 +111,7 @@ values."
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 18
+                               :size 13
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -123,7 +119,6 @@ values."
    dotspacemacs-leader-key "SPC"
    ;; The leader key accessible in `emacs state' and `insert state'
    ;; (default "M-m")
-   ;; dotspacemacs-emacs-leader-key "M-m"
    dotspacemacs-emacs-leader-key "C-c"
    ;; Major mode leader key is a shortcut key which is the equivalent of
    ;; pressing `<leader> m`. Set it to `nil` to disable it. (default ",")
@@ -247,6 +242,11 @@ values."
 It is called immediately after `dotspacemacs/init'.  You are free to put almost
 any user code here.  The exception is org related code, which should be placed
 in `dotspacemacs/user-config'."
+  (setq neo-vc-integration nil)
+  (global-set-key (kbd "C-?") 'help-command)
+  (global-set-key (kbd "M-?") 'mark-paragraph)
+  (global-set-key (kbd "C-h") 'delete-backward-char)
+  (global-set-key (kbd "M-h") 'backward-kill-word)
   )
 
 (defun dotspacemacs/user-config ()
@@ -257,23 +257,3 @@ layers configuration. You are free to put any user code."
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (manoj-dark))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
-
-(defun define-keys (mode-map key-fn-pairs)
-  (mapc (lambda (key-fn)
-          (let ((key (kbd (car key-fn)))
-                (function (car (cdr key-fn))))
-            (define-key mode-map key function)))
-        key-fn-pairs))
