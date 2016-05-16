@@ -89,16 +89,7 @@ prompt_command () {
     export PS1="${DKBLUE}\u${DKBLUE}@${DKBLUE} ${DKRED}$ERRPROMPT${DKBLUE} \w${DKGREEN}${BRANCH}${DEFAULT}$ "
 }
 
-
-#if [ "$color_prompt" = yes ]; then
- #   PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-#else
- #   PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-#fi
-
 unset color_prompt force_color_prompt
-
-# If tmux
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -114,9 +105,6 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -126,6 +114,9 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+alias ldir="ls -l | egrep  '^d'"
+alias lf="ls -l | egrep -v '^d'"
+
 alias glsdrm='git ls-files -d|xargs git rm'
 alias grs='git remote show origin'
 #alias veewee='bundle exec veewee'
@@ -143,14 +134,6 @@ alias wchd='watch -d ls -l'
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-
-# List all network connection (nm-applet = to have list of available network)
-# xev : to get a keycode of keyboard key
-# nmcli dev wifi con SSID password pwd name customName
-# nmcli dev status
-#alias nl = 'nmcli -p con list'
-
-# Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
@@ -166,30 +149,11 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-alias ldir="ls -l | egrep  '^d'"
-alias lf="ls -l | egrep -v '^d'"
-
-#chmod 400  ~/webadeo-wikeo/wikeo/wikeo-deployer/src/main/resource/id_rsa-universal-kp
-#chmod 400  ~/dashboard.pem
 chmod 400  ~/.ssh/id_rsa
-
 eval $(ssh-agent)
-
-#ssh-add ~/webadeo-wikeo/wikeo/wikeo-deployer/src/main/resource/id_rsa-universal-kp
-#ssh-add ~/dashboard.pem
 ssh-add ~/.ssh/id_rsa
 
-#export MULTIBYON1="ec2-54-247-145-107.eu-west-1.compute.amazonaws.com"
-#export MULTIBYON2="ec2-46-137-18-182.eu-west-1.compute.amazonaws.com"
-#export GANGLIA="ec2-46-137-65-168.eu-west-1.compute.amazonaws.com"
-#export WSTATION_GANG_METR="ec2-54-247-10-252.eu-west-1.compute.amazonaws.com"
-#export WIKEO_PROPERTIES_DIR="file:///home/sfeir/webadeo-wikeo/wikeo/wikeo-properties/local-dev"
-#export WIKEO_PROPERTIES_DIR="file:///home/sfeir/webadeo-wikeo/wci/scripts"
-#export LUC_REPO_ROOT="repo.wikeo.webadeo.net"
-
-
-export RUBYLIB=.:$RUBYLIB
-
+#export RUBYLIB=.:$RUBYLIB
 alias vup="vagrant up"
 alias vm1="vagrant ssh vm-1"
 alias vm2="vagrant ssh vm-2"
@@ -197,21 +161,13 @@ alias vm3="vagrant ssh vm-3"
 alias vm4="vagrant ssh vm-4"
 alias emc='emacsclient'
 alias emx='emacs -nw'
-alias gfs='git flow feature start'
-alias gff='git flow feature finish'
+# alias gfs='git flow feature start'
+# alias gff='git flow feature finish'
 
-#PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 export _JAVA_AWT_WM_NONREPARENTING=1
-export JAVA_HOME=/opt/java/jdk1.7.0_79
-PATH=$JAVA_HOME/bin:$HOME/bin:$PATH
-# export GRADLE_HOME=$HOME/softs/kyriba/gradle-1.11
-export GRADLE_HOME=$HOME/softs/kyriba/gradle-2.2.1
-PATH=$PATH:$GRADLE_HOME/bin
-export ANT_HOME=$HOME/softs/kyriba/ant/apache-ant-1.8.4
-PATH=$PATH:$ANT_HOME/bin
-export $PATH
+export ECLIPSE_HOME=$HOME/softs/eclipse/current_eclipse
+export PATH=$PATH:$ECLIPSE_HOME
 # nitrogen --restore
-#emacs --daemon
 
 #maps Menu key same as windows key (serves as meta-key for xmonad, in order to have symetry with windows key)
 xmodmap -e "keycode 135 = 0xffeb"
@@ -220,19 +176,15 @@ xmodmap -e "remove lock = 0x0000"
 #maps capslock to enter
 xmodmap -e "keycode 66 = 0xff0d"
 #xmodmap -e "keycode 135 = 0x0000"
-
 #disable the right mouse button
 #xmodmap -e 'pointer = 1 2 0 4 5 6 7 8 9'
 #restaure the default mouse confirguration
 #xmodmap -e 'pointer = default'
+export SCALA_HOME=$HOME/softs/scala/scala-current
+export SBT_HOME=$HOME/softs/scala/sbt
+PATH=$PATH:$SCALA_HOME/bin:$SBT_HOME/bin:$HOME/softs/scala/sbt/bin
+export PATH
 
-PATH=$PATH:$HOME/softs/scala/scala-2.11.4/bin:$HOME/softs/scala/sbt/bin
-export $PATH
-
-# Test 2b machine of Kinvo
-alias test_2b="ssh -i .ssh/id_rsa admin@10.42.214.20"
-alias ha_mat="ssh -i .ssh/id_rsa admin@10.42.221.20"
-alias ha_test="ssh -i .ssh/id_rsa admin@10.42.242.20"
 # Hack to fix xmonad crash when trying to share screen from hangout
 xprop -root -f _NET_CLIENT_LIST_STACKING 32x -set _NET_CLIENT_LIST_STACKING 0
 
