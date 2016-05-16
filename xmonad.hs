@@ -38,7 +38,7 @@ ownManageHook = composeAll
      ,className =? "Firefox" --> doShift "3:web"]
 
 mateConfig = desktopConfig
-    { terminal = "mate-terminal"
+    { terminal = "xfce4-terminal"
     , keys     = mateKeys <+> keys desktopConfig
     , workspaces = customWs
     , manageHook = manageDocks <+> ownManageHook
@@ -85,9 +85,8 @@ main = do
                 } `additionalKeysP` myKeys
 
 myKeys = [ (("M4-f") , runOrRaise "firefox" (className =? "Firefox"))
-           ,(("M4-c"),
-             runOrRaise "/home/massyl/softs/eclipse/eclipse.sh" (className =? "Eclipse"))
-           ,(("M4-n"), runOrRaise "/home/massyl/softs/shell/start-emacs.sh" (className =? "Emacs"))
+           ,(("M4-c"), runOrRaise "eclipse" (className =? "Eclipse"))
+           ,(("M4-m"), runOrRaise "emacs" (className =? "Emacs"))
            ,(("M4-z"), kill)
            ,(("M4-p"), spawn "dmenu_run | dmenu -b")
          ]
