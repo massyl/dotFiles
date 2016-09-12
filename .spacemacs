@@ -29,6 +29,7 @@ values."
      emacs-lisp
      git
      markdown
+     pandoc
      org
      (shell :variables
             shell-default-height 30
@@ -36,6 +37,7 @@ values."
      spell-checking
      haskell
      javascript
+     scala 
      ;; syntax-checking
      ;; version-control
      )
@@ -234,7 +236,7 @@ values."
    ;; `trailing' to delete only the whitespace at end of lines, `changed'to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup nil
+   dotspacemacs-whitespace-cleanup "trailing"
    ))
 
 (defun dotspacemacs/user-init ()
@@ -247,6 +249,8 @@ in `dotspacemacs/user-config'."
   (global-set-key (kbd "M-?") 'mark-paragraph)
   (global-set-key (kbd "C-h") 'delete-backward-char)
   (global-set-key (kbd "M-h") 'backward-kill-word)
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+  (add-to-list 'exec-path "~/.local/bin/")
   )
 
 (defun dotspacemacs/user-config ()
@@ -257,3 +261,19 @@ layers configuration. You are free to put any user code."
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/softs/test.org"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+
+(custom-set-variables
+ '(markdown-command "/usr/bin/pandoc"))
