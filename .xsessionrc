@@ -1,0 +1,21 @@
+
+
+#!/bin/bash
+
+# Load resources
+
+xrdb -merge .Xresourcess
+
+# Set up an icon tray
+#stalonetray &
+
+# Fire up apps
+
+# xscreensaver -no-splash &       
+
+STARTUP=x-window-manager
+if [ -x /usr/bin/nm-applet ] ; then
+    nm-applet --sm-disable &
+fi
+
+stack exec xmonad

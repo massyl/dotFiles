@@ -1,3 +1,4 @@
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -64,8 +65,6 @@ prompt_command () {
     fi
 
     # setup preferences
-   # local TIME=`fmt_time` # format time for prompt string
-   # local LOAD=`uptime|awk '{min=NF-2;print $min}'`
     # set the titlebar to the last 2 fields of pwd
     local TITLEBAR='\[\e]2;`pwdtail`\a\]'
 
@@ -85,11 +84,19 @@ prompt_command () {
     # return color to Terminal setting for text color
     local DEFAULT="\[\033[0;39m\]"
     # delete ${TITLEBAR} because it doesn't work inside the shell emacs or in the tty screen
-    #export PS1="${DKBLUE}\u${DKBLUE}@${DKBLUE} \h${DKCYAN}(${LOAD}) ${WHITE}${TIME} ${DKRED}$ERRPROMPT${DKBLUE} \w${DKGREEN}${BRANCH}${DEFAULT}$ "
     export PS1="${DKBLUE}\u${DKBLUE}@${DKBLUE} ${DKRED}$ERRPROMPT${DKBLUE} \w${DKGREEN}${BRANCH}${DEFAULT}$ "
 }
 
+
+#if [ "$color_prompt" = yes ]; then
+ #   PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+#else
+ #   PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+#fi
+
 unset color_prompt force_color_prompt
+
+# If tmux
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -105,6 +112,7 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
+
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -114,12 +122,8 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-alias ldir="ls -l | egrep  '^d'"
-alias lf="ls -l | egrep -v '^d'"
-
 alias glsdrm='git ls-files -d|xargs git rm'
 alias grs='git remote show origin'
-#alias veewee='bundle exec veewee'
 alias gpr='git pull --recruse-submodules'
 alias gcr='git clone --recursive'
 alias gfa='git fetch --all'
@@ -134,6 +138,14 @@ alias wchd='watch -d ls -l'
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
+
+# List all network connection (nm-applet = to have list of available network)
+# xev : to get a keycode of keyboard key
+# nmcli dev wifi con SSID password pwd name customName
+# nmcli dev status
+#alias nl = 'nmcli -p con list'
+
+# Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
@@ -149,11 +161,15 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
+alias lsd="ls -l | egrep  '^d'"
+alias lsf="ls -l | egrep -v '^d'"
+
 chmod 400  ~/.ssh/id_rsa
 eval $(ssh-agent)
 ssh-add ~/.ssh/id_rsa
 
-#export RUBYLIB=.:$RUBYLIB
+export RUBYLIB=.:$RUBYLIB
+
 alias vup="vagrant up"
 alias vm1="vagrant ssh vm-1"
 alias vm2="vagrant ssh vm-2"
@@ -161,13 +177,12 @@ alias vm3="vagrant ssh vm-3"
 alias vm4="vagrant ssh vm-4"
 alias emc='emacsclient'
 alias emx='emacs -nw'
-# alias gfs='git flow feature start'
-# alias gff='git flow feature finish'
+alias gfs='git flow feature start'
+alias gff='git flow feature finish'
 
 export _JAVA_AWT_WM_NONREPARENTING=1
-export ECLIPSE_HOME=$HOME/softs/eclipse/current_eclipse
-export PATH=$PATH:$ECLIPSE_HOME
 # nitrogen --restore
+#export PATH=$PATH:/opt/emacs24.5/bin
 
 #maps Menu key same as windows key (serves as meta-key for xmonad, in order to have symetry with windows key)
 xmodmap -e "keycode 135 = 0xffeb"
@@ -175,23 +190,29 @@ xmodmap -e "keycode 135 = 0xffeb"
 xmodmap -e "remove lock = 0x0000"
 #maps capslock to enter
 xmodmap -e "keycode 66 = 0xff0d"
-#xmodmap -e "keycode 135 = 0x0000"
+
 #disable the right mouse button
 #xmodmap -e 'pointer = 1 2 0 4 5 6 7 8 9'
 #restaure the default mouse confirguration
 #xmodmap -e 'pointer = default'
-export SCALA_HOME=$HOME/softs/scala/scala-current
-export SBT_HOME=$HOME/softs/scala/sbt
-PATH=$PATH:$SCALA_HOME/bin:$SBT_HOME/bin:$HOME/softs/scala/sbt/bin
+export SCALA_HOME=$HOME/softs/scala/current-scala
+export SBT_HOME=$HOME/softs/scala/current-sbt
+PATH=$PATH:$SCALA_HOME/bin:$SBT_HOME/bin
 export PATH
+# export PATH=/home/massyl/.stack/programs/x86_64-linux/ghc-7.10.3/bin:$PATH
+
+# Test 2b machine of Kinvo
+# alias test_2b="ssh -i .ssh/id_rsa admin@10.42.214.20"
+# alias ha_mat="ssh -i .ssh/id_rsa admin@10.42.221.20"
+# alias ha_test="ssh -i .ssh/id_rsa admin@10.42.242.20"
 
 # Hack to fix xmonad crash when trying to share screen from hangout
 xprop -root -f _NET_CLIENT_LIST_STACKING 32x -set _NET_CLIENT_LIST_STACKING 0
 
-export GHC_HOME=$HOME/softs/haskell/ghc-7.10.1
-export PATH=$GHC_HOME/bin:$PATH
+
+export GHC_HOME=$HOME/.stack/programs/x86_64-linux/ghc-8.0.2
 export CABAL_HOME=$HOME/.local
-export PATH=$CABAL_HOME/bin:$PATH
+export PATH=$HOME/bin:$GHC_HOME/bin:$CABAL_HOME/bin:$PATH
 
 eval "$(stack --bash-completion-script stack)"
 
@@ -204,3 +225,10 @@ copy_line_from_x_clipboard() {
     READLINE_POINT=$((n+${#s}))
 }
 bind -x '"\C-y": copy_line_from_x_clipboard'
+
+alias e="SUDO_EDITOR=\"emacsclient -t -a emacs\" sudoedit"
+
+export SAL_USE_VCLPLUGIN=gen lowriter
+
+eval "$(pandoc --bash-completion)"
+
