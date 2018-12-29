@@ -197,7 +197,9 @@ xmodmap -e "keycode 66 = 0xff0d"
 #xmodmap -e 'pointer = default'
 export SCALA_HOME=$HOME/softs/scala/current-scala
 export SBT_HOME=$HOME/softs/scala/current-sbt
-PATH=$PATH:$SCALA_HOME/bin:$SBT_HOME/bin
+export SCALA_STYLE_HOME=$HOME/softs/scala/
+export CONFLUENT_HOME=$HOME/softs/devops/carrefour/confluent/confluent-5.0.0
+PATH=$PATH:$SCALA_HOME/bin:$SBT_HOME/bin:$SCALA_STYLE_HOME:$CONFLUENT_HOME/bin
 export PATH
 # export PATH=/home/massyl/.stack/programs/x86_64-linux/ghc-7.10.3/bin:$PATH
 
@@ -206,11 +208,15 @@ export PATH
 # alias ha_mat="ssh -i .ssh/id_rsa admin@10.42.221.20"
 # alias ha_test="ssh -i .ssh/id_rsa admin@10.42.242.20"
 
+# export PATH=/home/massyl/.stack/programs/x86_64-linux/ghc-7.10.3/bin:$PATH
+# Test 2b machine of Kinvo
+# alias test_2b="ssh -i .ssh/id_rsa admin@10.42.214.20"
+# alias ha_mat="ssh -i .ssh/id_rsa admin@10.42.221.20"
+# alias ha_test="ssh -i .ssh/id_rsa admin@10.42.242.20"
+
 # Hack to fix xmonad crash when trying to share screen from hangout
 xprop -root -f _NET_CLIENT_LIST_STACKING 32x -set _NET_CLIENT_LIST_STACKING 0
-
-
-export GHC_HOME=$HOME/.stack/programs/x86_64-linux/ghc-8.0.2
+export GHC_HOME=$HOME/.stack/programs/x86_64-linux/ghc-8.4.3
 export CABAL_HOME=$HOME/.local
 export PATH=$HOME/bin:$GHC_HOME/bin:$CABAL_HOME/bin:$PATH
 
@@ -231,4 +237,7 @@ alias e="SUDO_EDITOR=\"emacsclient -t -a emacs\" sudoedit"
 export SAL_USE_VCLPLUGIN=gen lowriter
 
 eval "$(pandoc --bash-completion)"
-
+export HELM_BIN=$HOME/softs/devops/linux-amd64/
+export ISTIO_HOME=$HOME/softs/devops/carrefour/k8s/istio-1.0.2
+export PATH=$PATH:$HELM_BIN:$ISTIO_HOME/bin
+export EDITOR=emacs

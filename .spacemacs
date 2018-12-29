@@ -30,37 +30,53 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
-     ;; javascript
-     ;; ansible
-     ;; csv
-     ;; ruby
-     ;; lua
-     auto-completion
+   '(ruby
+     treemacs
+     html
+     ansible
+     sql
+     csv
+     (javascript :variables javascript-disable-tern-port-files nil)
      better-defaults
      emacs-lisp
      markdown
      git
      yaml
      pandoc
+     docker
+     gnus
      ;; org
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
-     spell-checking
+     ;; slack
      haskell
-     scala
-     ;; syntax-checking
-     '(auto-completion
-         (haskell :variables haskell-completion-backend 'intero))
-     '(haskell :variables haskell-process-type 'stack-ghci)
-     '(haskell :variables haskell-enable-hindent-style "johan-tibell")
-     ;; '((haskell :variables haskell-enable-shm-support nil))
-      ;; version-control
-     (scala :variables scala-use-unicode-arrows t)
-     (scala :variables scala-auto-start-ensime t)
-     (flycheck-scalastylerc "/home/massyl/softs/scala/scalastyle/scalastyle_config.xml")
+    '((haskell :variables
+                haskell-enable-hindent-style "johan-tibell"
+                haskell-enable-shm-support nil
+                ))
+    auto-completion
+    (haskell  :variables
+              haskell-process-type 'stack-ghci
+              haskell-completion-backend 'intero)
 
+    (scala :variables scala-enable-eldoc t
+           scala-auto-insert-asterisk-in-comments t)
+           ;; scala-auto-start-ensime t)
+     ;; (flycheck-scalastylerc "/home/massyl/softs/scala/scalastyle/scalastyle-config.xml")
+    ;; (scala :variables scala-use-unicode-arrows t)
+
+     ;; (scala :variables scala-auto-start-ensime t)
+     (shell :variables
+            shell-default-height 30
+            shell-default-position 'bottom)
+
+     ;; (java :variables java-backend 'eclim
+     ;;       eclim-eclipse-dirs '("/home/massyl/softs/eclipse/")
+     ;;       eclim-executable "/home/massyl/softs/eclipse/eclim")
+
+     spell-checking
+     syntax-checking
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -145,10 +161,10 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
+   dotspacemacs-themes '(solarized-dark
+                         spacemacs-dark
                          spacemacs-light
                          solarized-light
-                         solarized-dark
                          leuven
                          monokai
                          zenburn)
@@ -307,6 +323,8 @@ values."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup "trailing"
+   ;; js2-basic-offset 2
+   ;; setq-default js-indent-level 2
   ))
 
 (defun dotspacemacs/user-init ()
@@ -321,12 +339,51 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key (kbd "M-?") 'mark-paragraph)
   (global-set-key (kbd "C-h") 'delete-backward-char)
   (global-set-key (kbd "M-h") 'backward-kill-word)
-  (add-to-list 'exec-path "~/.local/bin/")
-  (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
-  (push '("melpa-stable" . "stable.melpa.org/packages/") configuration-layer--elpa-archives)
-  (push '(ensime . "melpa-stable") package-pinned-packages)
-  )
+  (global-set-key (kbd "C-x 8 a") (lambda ()(interactive) (insert "α")))
+  (global-set-key (kbd "C-x 8 b") (lambda ()(interactive) (insert "β")))
+  (global-set-key (kbd "C-x 8 u") (lambda ()(interactive) (insert "μ")))
+  (global-set-key (kbd "C-x 8 e") (lambda ()(interactive) (insert "ε")))
+  (global-set-key (kbd "C-x 8 t") (lambda ()(interactive) (insert "θ")))
+  (global-set-key (kbd "C-x 8 l") (lambda ()(interactive) (insert "λ")))
+  (global-set-key (kbd "C-x 8 f") (lambda ()(interactive) (insert "→")))
+  (global-unset-key (kbd "C-x 8 ="))
+  (global-set-key (kbd "C-x 8 =") (lambda ()(interactive) (insert "=")))
+  (global-set-key (kbd "C-x 8 >") (lambda ()(interactive) (insert ">")))
+  ;; (global-set-key (kbd "C-x 8 >=") (lambda ()(interactive) (insert "≥")))
+  (global-set-key (kbd "C-x 8 <") (lambda ()(interactive) (insert "<")))
+  ;; (global-set-key (kbd "C-x 8 <=") (lambda ()(interactive) (insert "≤")))
+  (global-set-key (kbd "C-x 8 &") (lambda ()(interactive) (insert "∧")))
+  (global-set-key (kbd "C-x 8 |") (lambda ()(interactive) (insert "∨")))
+  (global-set-key (kbd "C-x 8 n") (lambda ()(interactive) (insert "")))
 
+  (add-to-list 'exec-path "~/.local/bin/")
+  '((haskell :variables haskell-enable-hindent t))
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+  (setq-default flycheck-scalastylerc "~/softs/scala/scalastyle_config.xml")
+  (push '("melpa-stable" . "https://stable.melpa.org/packages/") configuration-layer--elpa-archives)
+  (push '(ensime . "melpa-stable") package-pinned-packages)
+  (setq gnus-secondary-select-methods
+        '(
+          (nnimap "gmail"
+                  (nnimap-address
+                   "imap.gmail.com")
+                  (nnimap-server-port 993)
+                  (nnimap-stream ssl))
+          )
+        )
+  (setq message-send-mail-function 'smtpmail-send-it
+        smtpmail-default-smtp-server "smtp.gmail.com"
+  )
+  (setq gnus-message-archive-method '(nnimap "imap.gmail.com")
+        gnus-message-archive-group "[Gmail]/Sent Mail")
+  (setq gnus-message-posting-styles
+        '(((header "to" "address@outlook.com")
+           (address "address@outlook.com"))
+          ((header "to" "address@gmail.com")
+           (address "address@gmail.com"))))
+  (setq nnml-directory "~/gmail")
+  (setq message-directory "~/gmail")
+ )
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
@@ -336,6 +393,13 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (define-key global-map (kbd "C-+") 'text-scale-increase)
   (define-key global-map (kbd "C--") 'text-scale-decrease)
+  (define-key global-map (kbd "C-+") 'text-scale-increase)
+  (define-key global-map (kbd "C--") 'text-scale-decrease)
+
+  (define-key haskell-mode-map (kbd "C-c m f r") 'hindent-reformat-region)
+  (define-key haskell-mode-map (kbd "C-c m f b") 'hindent-reformat-buffer)
+  (define-key haskell-mode-map (kbd "C-c m f d") 'hindent-reformat-decl)
+  (server-start)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -348,10 +412,31 @@ you should place your code here."
  '(markdown-command "/usr/bin/pandoc")
  '(package-selected-packages
    (quote
-    (noflet ensime sbt-mode scala-mode helm-company helm-c-yasnippet company-statistics company-cabal auto-yasnippet ac-ispell auto-complete yaml-mode xterm-color ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline smeargle shell-pop restart-emacs rainbow-delimiters quelpa popwin persp-mode pcre2el paradox pandoc-mode ox-pandoc orgit org-plus-contrib org-bullets open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative link-hint intero info+ indent-guide ido-vertical-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-ag haskell-snippets google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav dumb-jump define-word company-ghci company-ghc column-enforce-mode cmm-mode clean-aindent-mode auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
+    (winum powerline spinner hydra parent-mode projectile request flycheck pkg-info epl flx smartparens iedit anzu evil goto-chg undo-tree highlight diminish ghc haskell-mode company bind-map bind-key yasnippet packed f dash s helm avy helm-core async popup dockerfile-mode docker tablist docker-tramp fuzzy web-mode web-beautify unfill tagedit sql-indent slim-mode scss-mode sass-mode pug-mode ht markdown-mode livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jinja2-mode helm-css-scss haml-mode gitignore-mode flyspell-correct pos-tip magit magit-popup git-commit ghub let-alist with-editor emmet-mode csv-mode company-web web-completion-data company-tern dash-functional tern company-emacs-eclim eclim company-ansible coffee-mode ansible-doc ansible noflet ensime sbt-mode scala-mode helm-company helm-c-yasnippet company-statistics company-cabal auto-yasnippet ac-ispell auto-complete yaml-mode xterm-color ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline smeargle shell-pop restart-emacs rainbow-delimiters quelpa popwin persp-mode pcre2el paradox pandoc-mode ox-pandoc orgit org-plus-contrib org-bullets open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative link-hint intero info+ indent-guide ido-vertical-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-ag haskell-snippets google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav dumb-jump define-word company-ghci company-ghc column-enforce-mode cmm-mode clean-aindent-mode auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(markdown-command "/usr/bin/pandoc")
+ '(package-selected-packages
+   (quote
+    (yasnippet-snippets writeroom-mode visual-fill-column symon spaceline-all-the-icons prettier-js password-generator overseer nameless mvn monokai-theme meghanada maven-test-mode magit-svn json-navigator hierarchy impatient-mode htmlize helm-xref helm-purpose helm-git-grep groovy-mode groovy-imports pcache gradle-mode gitignore-templates evil-lion evil-goggles evil-cleverparens paredit editorconfig doom-modeline eldoc-eval shrink-path all-the-icons memoize counsel-projectile counsel swiper ivy centered-cursor-mode treemacs imenu-list font-lock+ dotenv-mode winum powerline spinner hydra parent-mode projectile request flycheck pkg-info epl flx smartparens iedit anzu evil goto-chg undo-tree highlight diminish ghc haskell-mode company bind-map bind-key yasnippet packed f dash s helm avy helm-core async popup dockerfile-mode docker tablist docker-tramp fuzzy web-mode web-beautify unfill tagedit sql-indent slim-mode scss-mode sass-mode pug-mode ht markdown-mode livid-mode skewer-mode simple-httpd less-css-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc jinja2-mode helm-css-scss haml-mode gitignore-mode flyspell-correct pos-tip magit magit-popup git-commit ghub let-alist with-editor emmet-mode csv-mode company-web web-completion-data company-tern dash-functional tern company-emacs-eclim eclim company-ansible coffee-mode ansible-doc ansible noflet ensime sbt-mode scala-mode helm-company helm-c-yasnippet company-statistics company-cabal auto-yasnippet ac-ispell auto-complete yaml-mode xterm-color ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline smeargle shell-pop restart-emacs rainbow-delimiters quelpa popwin persp-mode pcre2el paradox pandoc-mode ox-pandoc orgit org-plus-contrib org-bullets open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative link-hint intero info+ indent-guide ido-vertical-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-ag haskell-snippets google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav dumb-jump define-word company-ghci company-ghc column-enforce-mode cmm-mode clean-aindent-mode auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+)
